@@ -1,0 +1,36 @@
+{
+    "EC2_DATA": [
+        [
+            "i-0ad8b4f14c326e98b",
+            "t2.xlarge",
+            "stopped"
+        ],
+        [
+            "i-0cdb590920115d809",
+            "t2.medium",
+            "stopped"
+        ]
+    ],
+    "LAMBDA_DATA": [
+        [
+            "iam-key-rotation",
+            "python3.13"
+        ],
+        [
+            "email_reminder",
+            "python3.13"
+        ],
+        [
+            "fetch-dynomodbdata",
+            "python3.13"
+        ],
+        [
+            "firstfunction",
+            "python3.12"
+        ],
+        [
+            "dev-rds-migration-lambda",
+            "python3.11"
+        ]
+    ]
+}
