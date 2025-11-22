@@ -13,4 +13,30 @@
 
 # better way 
 
-print([ i*2 for i in range(1, 25, 5)])
+# print([ i*2 for i in range(1, 25, 5)])
+import boto3
+
+ses = boto3.client('ses')
+response = ses.send_email(
+    Source='aditiyamishranit@gmail.com',
+    Destination={
+        'ToAddresses': [
+            'livingdevops@gmail.com',
+        ]
+    },
+    Message={
+        'Subject': {
+            'Data': 'this is the subject',
+        },
+        'Body': {
+        #     'Text': {
+        #         'Data': 'this is the body',
+        #     },
+            'Html': {
+                'Data': '<h1>  this is heading <\h1>',
+            }
+        }}
+)
+
+
+print(response)
