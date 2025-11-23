@@ -8,6 +8,7 @@ import boto3
 rds = boto3.client("rds")
 cloudwatch = boto3.client("cloudwatch")
 
+
 def save_to_excel(data, headers, excel_file):
     """Save data to an Excel file."""
     try:
@@ -29,14 +30,14 @@ def save_to_excel(data, headers, excel_file):
         for col, cell_data in enumerate(row_data, start=1):
             ws.cell(row=row, column=col, value=str(cell_data))
             column_letter = get_column_letter(col)
-            column_width = max(len(str(cell_data)), len(headers[col-1]))
+            column_width = max(len(str(cell_data)), len(headers[col - 1]))
             ws.column_dimensions[column_letter].width = column_width + 2
 
     # Add table formatting
     table_range = f"A1:{get_column_letter(len(headers))}{len(data) + 1}"
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     table_name = f"Table_{timestamp}"
-    
+
     tab = Table(displayName=table_name, ref=table_range)
     style = TableStyleInfo(
         name="TableStyleMedium2",
@@ -47,9 +48,10 @@ def save_to_excel(data, headers, excel_file):
     )
     tab.tableStyleInfo = style
     ws.add_table(tab)
-    
+
     wb.save(excel_file)
     print(f"Saved report to {excel_file}")
+
 
 def get_db_freestorage(db_identifier):
     """Get free storage space for RDS instance in GB."""
@@ -74,25 +76,29 @@ def get_db_freestorage(db_identifier):
         EndTime=datetime.now().timestamp(),
         ScanBy="TimestampDescending",
     )
-    
+
     try:
         return round(response["MetricDataResults"][0]["Values"][0] / 1024**3, 2)
     except (IndexError, KeyError):
         print(f"Error fetching free storage for {db_identifier}")
         return 0.0
 
+
 def get_rds_instances():
     """Get all non-serverless, non-cluster RDS instances."""
     print("Fetching RDS instances...")
     db_instances = rds.describe_db_instances()["DBInstances"]
-    
+
     filtered_instances = []
     for db in db_instances:
-        if db.get("DBInstanceClass") != "db.serverless" and not db.get("DBClusterIdentifier"):
+        if db.get("DBInstanceClass") != "db.serverless" and not db.get(
+            "DBClusterIdentifier"
+        ):
             filtered_instances.append(db)
-    
+
     print(f"Found {len(filtered_instances)} RDS instances")
     return filtered_instances
+
 
 def format_data(db_instances):
     """Format RDS data for Excel output."""
@@ -110,13 +116,14 @@ def format_data(db_instances):
         data.append(row)
     return data
 
+
 def main():
     """Main function."""
     output_file = "rds_storage_report.xlsx"
-    
+
     instances = get_rds_instances()
     data = format_data(instances)
-    
+
     headers = [
         "DBInstanceIdentifier",
         "DBInstanceClass",
@@ -125,9 +132,10 @@ def main():
         "AllocatedStorage",
         "FreeStorageSpace",
     ]
-    
+
     save_to_excel(data, headers, output_file)
     print("Done!")
+
 
 if __name__ == "__main__":
     main()

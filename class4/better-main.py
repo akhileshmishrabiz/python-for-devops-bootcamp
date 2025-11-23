@@ -85,7 +85,7 @@ def send_email(from_email, to_email, msg):
 
 
 def run():
-    attachment_name = '/tmp/cloud_report.txt'
+    attachment_name = 'cloud_report.txt'
     data = generate_data()
     write_report(data, attachment_name)
     business_team = "businkpmgsol@mkpg.com"
